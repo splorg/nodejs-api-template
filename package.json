@@ -1,0 +1,42 @@
+{
+  "name": "nodejs-api-template",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsup",
+    "start": "node ./dist/main.js",
+    "dev": "tsx watch ./src/main.ts",
+    "lint": "npx biome check --write --unsafe ./src"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.679.0",
+    "@aws-sdk/s3-request-presigner": "^3.679.0",
+    "@prisma/client": "^5.21.1",
+    "bcrypt": "^5.1.1",
+    "chalk": "^5.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-async-errors": "^3.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.8.1",
+    "prisma": "^5.21.1",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}
