@@ -12,6 +12,7 @@ This repository is my personal template for creating a REST API with Node.js. It
 - User signup and authentication
   - Optional avatar upload
   - JWT authentication with refresh tokens
+  - Logged-in devices tracking/management
   - Authentication middleware
 - S3-compatible file uploading service
 - Logger service
