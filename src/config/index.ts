@@ -68,32 +68,32 @@ function validateEnvVars(): void {
 }
 
 function createStorageConfig(): StorageConfig {
-  const isDevelopment = process.env.NODE_ENV !== "production";
+	const isDevelopment = process.env.NODE_ENV !== "production";
 
-  if (isDevelopment) {
-    return {
-      credentials: {
-        accessKeyId: process.env.MINIO_ROOT_USER!,
-        secretAccessKey: process.env.MINIO_ROOT_PASSWORD!,
-      },
-      bucket: process.env.BUCKET_NAME!,
-      endpoint: process.env.MINIO_ENDPOINT,
-      region: "us-east-1",
-      forcePathStyle: true,
-      credentials_provider: 'function',
-      use_path_style_endpoint: true,
-      s3ForcePathStyle: true,
-    };
-  }
+	if (isDevelopment) {
+		return {
+			credentials: {
+				accessKeyId: process.env.MINIO_ROOT_USER!,
+				secretAccessKey: process.env.MINIO_ROOT_PASSWORD!,
+			},
+			bucket: process.env.BUCKET_NAME!,
+			endpoint: process.env.MINIO_ENDPOINT,
+			region: "us-east-1",
+			forcePathStyle: true,
+			credentials_provider: "function",
+			use_path_style_endpoint: true,
+			s3ForcePathStyle: true,
+		};
+	}
 
-  return {
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-    },
-    bucket: process.env.BUCKET_NAME!,
-    region: process.env.AWS_REGION!,
-  };
+	return {
+		credentials: {
+			accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+			secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+		},
+		bucket: process.env.BUCKET_NAME!,
+		region: process.env.AWS_REGION!,
+	};
 }
 
 validateEnvVars();

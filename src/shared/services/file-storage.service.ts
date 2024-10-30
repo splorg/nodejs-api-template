@@ -12,18 +12,18 @@ export class FileStorageService {
 	private readonly bucketName: string;
 
 	constructor() {
-		const isDevelopment = config.env === 'development';
-    
-    this.s3Client = new S3Client({
-      ...config.storage,
-      credentials: {
-        accessKeyId: config.storage.credentials.accessKeyId,
-        secretAccessKey: config.storage.credentials.secretAccessKey,
-      },
-      endpoint: isDevelopment ? config.storage.endpoint : undefined,
-      forcePathStyle: isDevelopment ? true : undefined,
-      region: config.storage.region,
-    });
+		const isDevelopment = config.env === "development";
+
+		this.s3Client = new S3Client({
+			...config.storage,
+			credentials: {
+				accessKeyId: config.storage.credentials.accessKeyId,
+				secretAccessKey: config.storage.credentials.secretAccessKey,
+			},
+			endpoint: isDevelopment ? config.storage.endpoint : undefined,
+			forcePathStyle: isDevelopment ? true : undefined,
+			region: config.storage.region,
+		});
 		this.bucketName = config.storage.bucket;
 	}
 

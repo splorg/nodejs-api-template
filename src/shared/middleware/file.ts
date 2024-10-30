@@ -1,5 +1,5 @@
 import { extname } from "node:path";
-import { NextFunction, type Request, type Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import multer from "multer";
 
 declare global {
@@ -101,7 +101,7 @@ export const handleFile = (options: FileOptions) => {
 				return;
 			}
 
-      next();
+			next();
 		});
 	};
 };
