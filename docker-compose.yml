@@ -8,14 +8,18 @@ services:
       - '9000:9000'
       - '9001:9001'
     volumes:
-      - .docker/minio:/data
+      - minio_data:/data
     command: server --console-address ":9001" /data
     env_file: ./.env
 
   db:
     image: postgres:16
     restart: unless-stopped
-    env_file: ./.env
+    environment:
+      - POSTGRES_DB=apidb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=docker
+      - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
       - '5432:5432'
     healthcheck:
@@ -24,4 +28,8 @@ services:
       timeout: 2s
       retries: 20
     volumes:
-      - .docker/postgres:/data/postgres
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  minio_data:
+  postgres_data:
