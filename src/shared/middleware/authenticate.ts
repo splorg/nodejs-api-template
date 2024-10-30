@@ -1,27 +1,25 @@
 import { config } from "@/config";
-import { NextFunction, type Request, type Response } from "express";
+import type { AuthenticatedUser, JWTPayload } from "@/modules/auth/auth.types";
+import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { prisma } from "../services/prisma.service";
 
 declare global {
 	namespace Express {
 		interface Request {
-			user: {
-				id: string;
-				email: string;
-				name: string;
-			};
+			user: AuthenticatedUser;
+			deviceId: string;
 		}
 	}
 }
 
-interface JWTPayload {
-	userId: string;
-}
-
 const accessSecret = config.jwt.accessSecret;
 
-export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
+export const authenticate = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
 	const token = extractTokenFromHeader(req);
 
 	if (!token) {
@@ -39,6 +37,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
 				id: true,
 				email: true,
 				name: true,
+				tokenVersion: true,
 			},
 		});
 
@@ -48,6 +47,35 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
 			});
 			return;
 		}
+
+		if (user.tokenVersion !== decoded.tokenVersion) {
+			res.status(401).json({
+				error: "Token has been revoked.",
+			});
+			return;
+		}
+
+		const device = await prisma.device.findFirst({
+			where: {
+				id: decoded.deviceId,
+				userId: user.id,
+				refreshTokens: {
+					some: {
+						isValid: true,
+					},
+				},
+			},
+		});
+
+		if (!device) {
+			res.status(401).json({
+				error: "Device has been logged out.",
+			});
+			return;
+		}
+
+		req.user = user;
+		req.deviceId = decoded.deviceId;
 
 		req.user = user;
 		next();

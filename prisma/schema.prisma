@@ -12,12 +12,14 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  email     String  @unique
-  name      String
-  password  String
-  avatarKey String? @map("avatar_key")
+  email        String  @unique
+  name         String
+  password     String
+  avatarKey    String? @map("avatar_key")
+  tokenVersion Int     @default(0) @map("token_version")
 
   refreshTokens RefreshToken[]
+  devices       Device[]
 
   @@map("users")
 }
@@ -27,12 +29,38 @@ model RefreshToken {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  token String @unique
+  token   String  @unique
   isValid Boolean @default(true) @map("is_valid")
+
+  userId   String @map("user_id")
+  user     User   @relation(fields: [userId], references: [id])
+  deviceId String @map("device_id")
+  device   Device @relation(fields: [deviceId], references: [id])
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+enum DeviceType {
+  web
+  ios
+  android
+  other
+}
+
+model Device {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name       String
+  type       DeviceType @default(other)
+  lastUsedAt DateTime   @default(now()) @map("last_used_at")
 
   userId String @map("user_id")
   user   User   @relation(fields: [userId], references: [id])
 
-  @@map("refresh_tokens")
-  @@index([userId])
+  refreshTokens RefreshToken[]
+
+  @@map("devices")
 }

@@ -1,3 +1,4 @@
+import { PASSWORD_MIN_LENGTH, PASSWORD_PATTERN } from "@/shared/constants";
 import { z } from "zod";
 
 export const authValidation = {
@@ -6,9 +7,12 @@ export const authValidation = {
 			email: z.string().email("Invalid email format"),
 			password: z
 				.string()
-				.min(8, "Password must be at least 8 characters")
+				.min(
+					PASSWORD_MIN_LENGTH,
+					`Password must be at least ${PASSWORD_MIN_LENGTH} characters`,
+				)
 				.regex(
-					/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+					PASSWORD_PATTERN,
 					"Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
 				),
 			confirmPassword: z.string(),
@@ -17,7 +21,8 @@ export const authValidation = {
 				.min(2, "Name must be at least 2 characters")
 				.max(50, "Name cannot exceed 50 characters")
 				.regex(/^[a-zA-Z\s]*$/, "Name can only contain letters and spaces"),
-			avatarKey: z.string().optional().nullable(),
+			deviceType: z.enum(["web", "ios", "android", "other"]),
+			model: z.string().optional(),
 		})
 		.refine((data) => data.password === data.confirmPassword, {
 			message: "Passwords don't match",
@@ -27,6 +32,8 @@ export const authValidation = {
 	login: z.object({
 		email: z.string().email("Invalid email format"),
 		password: z.string().min(1, "Password is required"),
+		deviceType: z.enum(["web", "ios", "android", "other"]),
+		model: z.string().optional(),
 	}),
 
 	refresh: z.object({
@@ -36,6 +43,29 @@ export const authValidation = {
 	logout: z.object({
 		refreshToken: z.string().min(1, "Refresh token is required"),
 	}),
+
+	logoutDevice: z.object({
+		deviceId: z.string().min(1, "Device ID is required"),
+	}),
+
+	changePassword: z
+		.object({
+			password: z
+				.string()
+				.min(
+					PASSWORD_MIN_LENGTH,
+					`Password must be at least ${PASSWORD_MIN_LENGTH} characters`,
+				)
+				.regex(
+					PASSWORD_PATTERN,
+					"Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+				),
+			confirmPassword: z.string(),
+		})
+		.refine((data) => data.password === data.confirmPassword, {
+			message: "Passwords don't match",
+			path: ["confirmPassword"],
+		}),
 };
 
 export type SignupInput = z.infer<typeof authValidation.signup>;
