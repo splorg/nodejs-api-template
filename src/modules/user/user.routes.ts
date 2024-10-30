@@ -11,5 +11,6 @@ const userService = new UserService(prisma, fileService);
 const userController = new UserController(userService);
 
 router.get("/me", authenticate, userController.getMe);
+router.patch("/me", authenticate, userController.update);
 
 export const userRoutes = router;
