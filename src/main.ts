@@ -6,6 +6,7 @@ import { authRoutes } from "./modules/auth/auth.routes";
 import { userRoutes } from "./modules/user/user.routes";
 import { errorHandler } from "./shared/middleware/errorHandler";
 import { requestLogger } from "./shared/middleware/requestLogger";
+import { logRoutes } from "./shared/utils";
 
 const app = express();
 
@@ -19,11 +20,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
 
 app.use("/auth", authRoutes);
-app.use("/user", userRoutes);
+app.use("/users", userRoutes);
 
 app.use(errorHandler);
 
 app.listen(config.port, () => {
+	logRoutes(app);
 	console.log(
 		`Server running on port ${config.port}. Environment: ${config.env}`,
 	);
